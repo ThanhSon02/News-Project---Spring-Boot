@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>NEWSROOM - Free Bootstrap Magazine Template</title>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" th:href="@{https://fonts.gstatic.com}">
+    <link th:href="@{https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap}" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css}" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid">
+        <div class="row align-items-center py-2 px-lg-5">
+            <div class="col-lg-4">
+                <a th:href="@{/}" class="navbar-brand d-none d-lg-block">
+                    <h1 class="m-0 display-5 text-uppercase"><span class="text-primary">News</span>Room</h1>
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0 mb-3">
+        <nav class="navbar navbar-expand-lg bg-light navbar-light py-2 py-lg-0 px-lg-5">
+            <a class="navbar-brand d-block d-lg-none">
+                <h1 class="m-0 display-5 text-uppercase"><span class="text-primary">News</span>Room</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-0 px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a th:href="@{/}" class="nav-item nav-link active">Trang chủ</a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown">Danh mục</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a class="dropdown-item" th:each="category : ${categories}" th:text="${category.categoryName}" th:href="@{/category(categoryId=${category.categoryId})}"></a>
+                        </div>
+                    </div>
+                    <a th:href="@{/most_view}" class="nav-item nav-link">Xem nhiều nhất</a>
+                </div>
+                <form th:action="@{/news/search}" method="get">
+                    <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
+                        <input type="text" class="form-control" placeholder="Từ khoá" name="keyword">
+                        <div class="input-group-append">
+                            <button class="input-group-text text-secondary" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Top News Slider Start -->
+    <div class="container-fluid py-3">
+        <div class="container">
+            <div class="owl-carousel owl-carousel-2 carousel-item-3 position-relative">
+                <div class="d-flex" th:each="news : ${newsList}">
+                    <img th:src="${news.photoThumbnail}" style="width: 80px; height: 80px; object-fit: cover;">
+                    <div class="d-flex align-items-center bg-light px-3" style="height: 80px;">
+                        <a th:href="@{/detail/{newsId}(newsId = ${news.newsId})}" class="text-secondary font-weight-semi-bold p-2" th:text="${news.newsTitle}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Top News Slider End -->
+
+
+    <!-- Main News Slider Start -->
+    <div class="container-fluid py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
+                        <div th:each="news : ${newsList}" class="position-relative overflow-hidden" style="height: 435px;">
+                            <img class="img-fluid h-100" th:src="${news.photoThumbnail}" style="object-fit: cover;">
+                            <div class="overlay">
+                                <div class="mb-1">
+                                    <a class="text-white" th:text="${news.category.categoryName}"></a>
+                                    <span class="px-2 text-white">/</span>
+                                    <a class="text-white" th:text="${#dates.format(news.PUBLISH_DATE, 'dd-MM-yyyy')}"></a>
+                                </div>
+                                <a th:href="@{/detail/{newsId}(newsId = ${news.newsId})}" class="h2 m-0 text-white font-weight-bold" th:text="${news.newsTitle}"></a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
+                        <h3 class="m-0">Danh mục</h3>
+                    </div>
+                    <div th:each="category, iter : ${categories}" th:if="${iter.index < 4}" class="position-relative overflow-hidden mb-3" style="height: 80px;">
+                        <img class="img-fluid w-100 h-100" style="object-fit: cover;">
+                        <a th:href="@{/category(categoryId=${category.categoryId})}" th:text="${category.categoryName}" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main News Slider End -->
+
+    <!-- Category News Slider Start -->
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div th:each="category, iter : ${categories}" th:if="${iter.index < 4}" class="col-lg-6 py-3">
+                    <div class="bg-light py-2 px-4 mb-3">
+                        <h3 th:text="${category.categoryName}" class="m-0"></h3>
+                    </div>
+                    <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
+                        <div th:each="news, iter : ${category.newsList}" th:if="${iter.index < 3}" class="position-relative">
+                            <div style="height: 150;">
+	                            <img class="img-fluid w-100" th:src="${news.photoThumbnail}" style="object-fit: cover; height: 150px;">							
+							</div>
+                            <div class="overlay position-relative bg-light" style="height: 240px; justify-content: flex-start;">
+                                <div class="mb-2 d-flex" style="font-size: 13px;">
+                                    <a th:text="${category.categoryName}"></a>
+                                    <span class="px-1">/</span>
+                                    <span th:text="${#dates.format(news.PUBLISH_DATE, 'dd-MM-yyyy')}"></span>
+                                </div>
+                                <a th:href="@{/detail/{newsId}(newsId = ${news.newsId})}" th:text="${news.newsTitle}" class="h4 m-0"></a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Category News Slider End -->
+
+
+    
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-light pt-5 px-sm-3 px-md-5">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-5">
+                <a th:href="index.html" class="navbar-brand">
+                    <h1 class="mb-2 mt-n2 display-5 text-uppercase"><span class="text-primary">News</span>Room</h1>
+                </a>
+                <p>Volup amet magna clita tempor. Tempor sea eos vero ipsum. Lorem lorem sit sed elitr sed kasd et</p>
+
+            </div>
+            <div class="col-lg-4 col-md-6 mb-5">
+                <h4 class="font-weight-bold mb-4">Danh mục</h4>
+                <div class="d-flex flex-wrap m-n1">
+                    <a class="btn btn-sm btn-outline-secondary m-1" th:each="category : ${categories}" th:text="${category.categoryName}" th:href="@{/category(categoryId=${category.categoryId})}"></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-5">
+                <h4 class="font-weight-bold mb-4">Tags</h4>
+                <div class="d-flex flex-wrap m-n1">
+                    <a class="btn btn-sm btn-outline-secondary m-1" th:each="category : ${categories}" th:text="${category.categoryName}" th:href="@{/category(categoryId=${category.categoryId})}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid py-4 px-sm-3 px-md-5">
+        <p class="m-0 text-center">
+            &copy; <a class="font-weight-bold"> Your Site Name</a>. All Rights Reserved.
+
+            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+            Designed by <a class="font-weight-bold">HTML Codex</a>
+        </p>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a class="btn btn-dark back-to-top"><i class="fa fa-angle-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/lib/easing/easing.min.js}"></script>
+    <script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+
+
+    <!-- Template Javascript -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+
+</html>
